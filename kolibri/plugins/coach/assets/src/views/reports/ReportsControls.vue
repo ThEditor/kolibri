@@ -43,7 +43,7 @@
 
 <script>
 
-  import { isEmbeddedWebView } from 'kolibri.utils.browserInfo';
+  import { mapGetters } from 'vuex';
   import pickBy from 'lodash/pickBy';
   import commonCoach from '../common';
   import { ClassesPageNames } from '../../../../../learn/assets/src/constants';
@@ -59,9 +59,10 @@
       },
     },
     computed: {
+      ...mapGetters(['isAppContext']),
       exportDisabled() {
         // Always disable in app mode until we add the ability to download files.
-        return isEmbeddedWebView || this.disableExport;
+        return !this.isAppContext || this.disableExport;
       },
       isMainReport() {
         return (

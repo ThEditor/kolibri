@@ -184,7 +184,6 @@
 <script>
 
   import { mapState, mapGetters, mapActions } from 'vuex';
-  import { isEmbeddedWebView } from 'kolibri.utils.browserInfo';
   import urls from 'kolibri.urls';
   import { FacilityResource } from 'kolibri.resources';
   import commonCoreStrings from 'kolibri.coreVue.mixins.commonCoreStrings';
@@ -242,12 +241,12 @@
         'inSummaryCSVCreation',
         'firstLogDate',
       ]),
-      ...mapGetters(['activeFacilityId', 'userIsMultiFacilityAdmin', 'facilityPageLinks']),
+      ...mapGetters(['activeFacilityId', 'userIsMultiFacilityAdmin', 'facilityPageLinks', 'isAppContext']),
       ...mapState('manageCSV', ['sessionDateCreated', 'summaryDateCreated']),
       // NOTE: We disable CSV file upload/download on embedded web views like the Mac
       // and Android apps
       canUploadDownloadFiles() {
-        return !isEmbeddedWebView;
+        return this.isAppContext;
       },
       pollForTasks() {
         return this.$route.name === PageNames.DATA_EXPORT_PAGE;

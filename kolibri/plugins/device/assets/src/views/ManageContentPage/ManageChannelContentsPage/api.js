@@ -7,7 +7,7 @@ import { TaskTypes } from 'kolibri.utils.syncTaskUtils';
 import { getChannelWithContentSizes } from '../../../modules/wizard/apiChannelMetadata';
 import { getDeviceInfo } from '../../../modules/deviceInfo/handlers';
 
-export function fetchPageData(channelId) {
+export function fetchPageData(channelId, isAppContext) {
   const studioChannelPromise = RemoteChannelResource.fetchModel({ id: channelId, force: true })
     .then(channel => {
       this.studioChannel = channel;
@@ -17,7 +17,7 @@ export function fetchPageData(channelId) {
       return null;
     });
   return Promise.all([
-    getDeviceInfo(),
+    getDeviceInfo(isAppContext),
     getChannelWithContentSizes(channelId, false),
     studioChannelPromise,
   ]).then(([deviceInfo, channel, studioChannel]) => {

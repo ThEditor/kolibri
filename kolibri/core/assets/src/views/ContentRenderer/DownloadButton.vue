@@ -20,7 +20,7 @@
 
 <script>
 
-  import { isEmbeddedWebView } from 'kolibri.utils.browserInfo';
+  import { mapGetters } from 'vuex';
   import { getFilePresetString } from './filePresetStrings';
   import { getRenderableFiles } from './utils';
 
@@ -37,11 +37,12 @@
       },
     },
     computed: {
+      ...mapGetters(['isAppContext']),
       downloadableFiles() {
         return getRenderableFiles(this.files).filter(file => file.preset !== 'exercise');
       },
       canDownload() {
-        return !isEmbeddedWebView && this.downloadableFiles.length;
+        return this.isAppContext && this.downloadableFiles.length;
       },
       fileOptions() {
         const options = this.files.map(file => {

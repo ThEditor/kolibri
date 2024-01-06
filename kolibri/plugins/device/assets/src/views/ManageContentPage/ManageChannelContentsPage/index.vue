@@ -90,6 +90,7 @@
   import commonCoreStrings from 'kolibri.coreVue.mixins.commonCoreStrings';
   import ImmersivePage from 'kolibri.coreVue.components.ImmersivePage';
   import { TransferTypes } from 'kolibri.utils.syncTaskUtils';
+  import { mapGetters } from 'vuex';
   import useContentTasks from '../../../composables/useContentTasks';
   import ChannelContentsSummary from '../../SelectContentPage/ChannelContentsSummary';
   import ContentTreeViewer from '../../SelectContentPage/ContentTreeViewer';
@@ -143,6 +144,7 @@
       };
     },
     computed: {
+      ...mapGetters(['isAppContext']),
       backRoute() {
         return { name: PageNames.MANAGE_CONTENT_PAGE };
       },
@@ -197,7 +199,7 @@
       next();
     },
     beforeMount() {
-      this.fetchPageData(this.channelId)
+      this.fetchPageData(this.channelId, this.isAppContext)
         .then(pageData => {
           this.setUpPage(pageData);
         })
@@ -320,7 +322,7 @@
         this.$store.commit('manageContent/wizard/RESET_NODE_LISTS');
         // refresh the data on this page. if the entire channel ends up
         // being deleted, then redirect to upper page
-        this.fetchPageData(this.channelId)
+        this.fetchPageData(this.channelId, this.isAppContext)
           .then(this.setUpPage)
           .catch(error => {
             // If entire channel is deleted, redirect

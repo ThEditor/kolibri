@@ -2,12 +2,13 @@ import client from 'kolibri.client';
 import urls from 'kolibri.urls';
 import samePageCheckGenerator from 'kolibri.utils.samePageCheckGenerator';
 import bytesForHumans from 'kolibri.utils.bytesForHumans';
-import { isEmbeddedWebView } from 'kolibri.utils.browserInfo';
 
 /* Function to fetch device info from the backend
  * and resolve validated data
+ *
+ * @param {boolean} isAppContext
  */
-export function getDeviceInfo() {
+export function getDeviceInfo(isAppContext) {
   const requests = [
     client({ url: urls['kolibri:core:deviceinfo']() }),
     client({ url: urls['kolibri:core:devicename']() }),
@@ -22,7 +23,7 @@ export function getDeviceInfo() {
     const { server } = infoResponse.headers;
 
     if (server.includes('0.0.0.0')) {
-      if (isEmbeddedWebView) {
+      if (!isAppContext) {
         data.server_type = 'Kolibri app server';
       } else {
         data.server_type = 'Kolibri internal server';
@@ -42,7 +43,7 @@ export function getDeviceInfo() {
 export function showDeviceInfoPage(store) {
   if (store.getters.canManageContent) {
     const shouldResolve = samePageCheckGenerator(store);
-    const promises = Promise.all([getDeviceInfo()]);
+    const promises = Promise.all([getDeviceInfo(store.getters.isAppContext)]);
     return promises
       .then(function onSuccess([deviceInfo]) {
         if (shouldResolve()) {
